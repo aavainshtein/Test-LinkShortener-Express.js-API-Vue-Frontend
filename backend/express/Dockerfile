@@ -13,7 +13,7 @@ RUN yarn install --frozen-lockfile
 COPY ./backend/express/prisma ./prisma/
 COPY ./backend/express/src ./src/
 COPY ./backend/express/tsconfig.json ./tsconfig.json
-
+RUN yarn prisma generate
 RUN yarn run build
 
 # --- Этап продакшена (Production Stage) ---

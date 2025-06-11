@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/postgres/initdb.d:/docker-entrypoint-initdb.d:ro
@@ -25,18 +27,20 @@ services:
     ports:
       - '${BACKEND_PORT}:${BACKEND_PORT}'
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public
+      DATABASE_URL: ${DATABASE_URL}
       BACKEND_PORT: ${BACKEND_PORT}
-      NODE_ENV: ${NODE_ENV}
+      NODE_ENV: development
     volumes:
       - ./backend/express/src:/app/src
       - ./backend/express/package.json:/app/package.json
       - ./backend/express/tsconfig.json:/app/tsconfig.json
+      - ./backend/express/prisma:/app/prisma
       - ./shared:/app/shared
       - /app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && yarn start" ч
 
 volumes:
   postgres_data:
