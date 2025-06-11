@@ -66,3 +66,12 @@ export class InternalServerError extends CustomError {
     Object.setPrototypeOf(this, InternalServerError.prototype)
   }
 }
+
+export class ShortAliasGenerationError extends InternalServerError {
+  constructor(
+    message: string = 'Failed to generate a unique short alias after multiple attempts.',
+  ) {
+    super(message)
+    Object.setPrototypeOf(this, ShortAliasGenerationError.prototype)
+  }
+}
