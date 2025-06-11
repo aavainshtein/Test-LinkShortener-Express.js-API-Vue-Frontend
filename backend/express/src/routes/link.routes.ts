@@ -7,6 +7,7 @@ import {
   createShortLinkController,
   redirectToOriginalUrlController,
   getLinkInfoController,
+  getLinkAnalyticsController,
 } from '../controllers/link.controller.js'
 
 const router = Router()
@@ -20,5 +21,7 @@ router.post(
 router.get('/:shortAlias', ipLoggerMiddleware, redirectToOriginalUrlController)
 
 router.get('/info/:shortAlias', getLinkInfoController)
+
+router.get('/analytics/:shortAlias', getLinkAnalyticsController)
 
 export default router

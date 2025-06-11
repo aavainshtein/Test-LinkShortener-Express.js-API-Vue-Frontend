@@ -127,3 +127,38 @@ export const getLinkInfo = async (shortAlias: string) => {
 
   return link
 }
+
+/**
+ * Получает аналитику (список кликов) для короткой ссылки по её shortAlias.
+ * @param shortAlias Короткий алиас ссылки.
+ * @returns Массив объектов Click, связанных с данной ссылкой.
+ * @throws NotFoundError если ссылка не найдена.
+ */
+export const getLinkAnalytics = async (shortAlias: string) => {
+  const link = await prisma.link.findUnique({
+    where: { shortAlias: shortAlias },
+    select: {
+      id: true,
+      originalUrl: true,
+      shortAlias: true,
+      alias: true,
+      clickCount: true,
+      clicks: {
+        select: {
+          id: true,
+          ipAddress: true,
+          clickedAt: true,
+        },
+        orderBy: {
+          clickedAt: 'asc',
+        },
+      },
+    },
+  })
+
+  if (!link) {
+    throw new NotFoundError('Short URL analytics not found.')
+  }
+
+  return link
+}

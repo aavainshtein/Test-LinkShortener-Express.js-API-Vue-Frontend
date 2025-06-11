@@ -4,6 +4,7 @@ import {
   createShortLink,
   getOriginalUrl,
   getLinkInfo,
+  getLinkAnalytics,
 } from '../services/link.service.js'
 import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
 
@@ -68,6 +69,25 @@ export const getLinkInfoController = async (
     const linkInfo = await getLinkInfo(shortAlias)
 
     return res.status(200).json(linkInfo)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Контроллер для получения аналитики (списка кликов) по короткой ссылке.
+ * Обрабатывает GET /analytics/{shortAlias}
+ */
+export const getLinkAnalyticsController = async (
+  req: Request<{ shortAlias: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { shortAlias } = req.params
+    const linkAnalytics = await getLinkAnalytics(shortAlias)
+
+    return res.status(200).json(linkAnalytics)
   } catch (error) {
     next(error)
   }
