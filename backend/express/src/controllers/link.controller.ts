@@ -1,7 +1,7 @@
 // backend/express/src/controllers/link.controller.ts
 import { Request, Response, NextFunction } from 'express'
-import { createShortLink, getOriginalUrl } from '../services/link.service'
-import { CreateLinkDto } from '../../shared/schemas/link.schema'
+import { createShortLink, getOriginalUrl } from '../services/link.service.js'
+import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
 
 /**
  * Контроллер для создания новой короткой ссылки.
@@ -39,9 +39,12 @@ export const redirectToOriginalUrlController = async (
 ) => {
   try {
     const { shortAlias } = req.params
-    const originalUrl = await getOriginalUrl(shortAlias)
+    // Получаем IP-адрес из объекта запроса (он был добавлен middleware)
+    const ipAddress = req.ipAddress
 
-    return res.redirect(302, originalUrl) 
+    const originalUrl = await getOriginalUrl(shortAlias, ipAddress)
+
+    return res.redirect(302, originalUrl)
   } catch (error) {
     next(error)
   }
