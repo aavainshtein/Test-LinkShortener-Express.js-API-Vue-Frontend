@@ -1,6 +1,10 @@
 // backend/express/src/controllers/link.controller.ts
 import { Request, Response, NextFunction } from 'express'
-import { createShortLink, getOriginalUrl } from '../services/link.service.js'
+import {
+  createShortLink,
+  getOriginalUrl,
+  getLinkInfo,
+} from '../services/link.service.js'
 import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
 
 /**
@@ -45,6 +49,25 @@ export const redirectToOriginalUrlController = async (
     const originalUrl = await getOriginalUrl(shortAlias, ipAddress)
 
     return res.redirect(302, originalUrl)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Контроллер для получения информации о короткой ссылке.
+ * Обрабатывает GET /info/{shortAlias}
+ */
+export const getLinkInfoController = async (
+  req: Request<{ shortAlias: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { shortAlias } = req.params
+    const linkInfo = await getLinkInfo(shortAlias)
+
+    return res.status(200).json(linkInfo)
   } catch (error) {
     next(error)
   }

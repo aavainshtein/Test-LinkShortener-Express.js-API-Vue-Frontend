@@ -99,3 +99,31 @@ export const getOriginalUrl = async (
 
   return link.originalUrl
 }
+
+/**
+ * Получает полную информацию о короткой ссылке по её shortAlias.
+ * @param shortAlias Короткий алиас ссылки.
+ * @returns Объект Link из базы данных.
+ * @throws NotFoundError если ссылка не найдена.
+ */
+export const getLinkInfo = async (shortAlias: string) => {
+  const link = await prisma.link.findUnique({
+    where: { shortAlias: shortAlias },
+    select: {
+      // Указываем, какие поля нам нужны
+      id: true,
+      originalUrl: true,
+      shortAlias: true,
+      alias: true,
+      createdAt: true,
+      expiresAt: true,
+      clickCount: true,
+    },
+  })
+
+  if (!link) {
+    throw new NotFoundError('Short URL information not found.')
+  }
+
+  return link
+}

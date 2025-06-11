@@ -6,6 +6,7 @@ import { createLinkSchema } from '../../shared/schemas/link.schema.js'
 import {
   createShortLinkController,
   redirectToOriginalUrlController,
+  getLinkInfoController,
 } from '../controllers/link.controller.js'
 
 const router = Router()
@@ -17,5 +18,7 @@ router.post(
 )
 
 router.get('/:shortAlias', ipLoggerMiddleware, redirectToOriginalUrlController)
+
+router.get('/info/:shortAlias', getLinkInfoController)
 
 export default router
