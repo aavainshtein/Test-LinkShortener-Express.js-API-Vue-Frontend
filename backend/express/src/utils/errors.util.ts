@@ -1,4 +1,4 @@
-// backend/express/src/utils/errors.util.ts
+import { ErrorName, ErrorMessages } from './errors.constants.js'
 
 interface ErrorDetails {
   [key: string]: any // Общий тип для деталей ошибки
@@ -12,13 +12,12 @@ interface ErrorDetails {
  */
 export class CustomError extends Error {
   public statusCode: number
-  public details?: ErrorDetails[] // Опциональные детали, например, для валидации
+  public details?: ErrorDetails[]
 
   constructor(message: string, statusCode: number, details?: ErrorDetails[]) {
     super(message)
     this.statusCode = statusCode
     this.details = details
-    // Установка прототипа для корректного instanceof
     Object.setPrototypeOf(this, CustomError.prototype)
   }
 }
@@ -28,8 +27,9 @@ export class CustomError extends Error {
  * Используется для ошибок валидации или некорректных запросов.
  */
 export class BadRequestError extends CustomError {
-  constructor(message: string = 'Bad Request', details?: ErrorDetails[]) {
-    super(message, 400, details)
+  constructor(details?: ErrorDetails[]) {
+    super(ErrorMessages[ErrorName.BadRequest], 400, details)
+    this.name = ErrorName.BadRequest
     Object.setPrototypeOf(this, BadRequestError.prototype)
   }
 }
@@ -39,8 +39,9 @@ export class BadRequestError extends CustomError {
  * Используется, когда ресурс не найден.
  */
 export class NotFoundError extends CustomError {
-  constructor(message: string = 'Resource Not Found') {
-    super(message, 404)
+  constructor() {
+    super(ErrorMessages[ErrorName.NotFound], 404)
+    this.name = ErrorName.NotFound
     Object.setPrototypeOf(this, NotFoundError.prototype)
   }
 }
@@ -50,8 +51,9 @@ export class NotFoundError extends CustomError {
  * Используется, когда запрос конфликтует с текущим состоянием сервера (например, алиас уже занят).
  */
 export class ConflictError extends CustomError {
-  constructor(message: string = 'Conflict') {
-    super(message, 409)
+  constructor() {
+    super(ErrorMessages[ErrorName.Conflict], 409)
+    this.name = ErrorName.Conflict
     Object.setPrototypeOf(this, ConflictError.prototype)
   }
 }
@@ -61,17 +63,18 @@ export class ConflictError extends CustomError {
  * Используется для непредвиденных ошибок сервера.
  */
 export class InternalServerError extends CustomError {
-  constructor(message: string = 'Internal Server Error') {
-    super(message, 500)
+  constructor() {
+    super(ErrorMessages[ErrorName.InternalServer], 500)
+    this.name = ErrorName.InternalServer
     Object.setPrototypeOf(this, InternalServerError.prototype)
   }
 }
 
 export class ShortAliasGenerationError extends InternalServerError {
-  constructor(
-    message: string = 'Failed to generate a unique short alias after multiple attempts.',
-  ) {
-    super(message)
+  constructor() {
+    super()
+    this.name = ErrorName.ShortAliasGeneration
+    this.message = ErrorMessages[ErrorName.ShortAliasGeneration]
     Object.setPrototypeOf(this, ShortAliasGenerationError.prototype)
   }
 }
