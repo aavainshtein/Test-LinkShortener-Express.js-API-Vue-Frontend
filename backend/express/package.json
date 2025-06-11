@@ -5,7 +5,7 @@
   "packageManager": "yarn@1.22.22",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "prisma:generate": "prisma generate"
@@ -15,12 +15,14 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.9",
-    "express": "^5.x",
-    "nanoid": "^5.x",
+    "@types/morgan": "^1.9.10",
+    "express": "^4.x",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.1.5",
     "zod": "^3.x"
   },
   "devDependencies": {
-    "@types/express": "^5.x",
+    "@types/express": "^4.x",
     "@types/node": "^24.x",
     "dotenv-cli": "^8.0.0",
     "prisma": "^6.9",
