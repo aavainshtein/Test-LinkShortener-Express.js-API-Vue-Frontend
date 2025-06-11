@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { AnyZodObject, ZodError } from 'zod'
-import { BadRequestError } from '../utils/errors.util'
+import { BadRequestError } from '../utils/errors.util.js'
 
 /**
  * Middleware для валидации входящих данных запроса (body, query, params) с помощью Zod.
