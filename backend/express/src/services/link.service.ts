@@ -162,3 +162,31 @@ export const getLinkAnalytics = async (shortAlias: string) => {
 
   return link
 }
+
+/**
+ * Удаляет короткую ссылку и все связанные с ней клики по shortAlias.
+ * @param shortAlias Короткий алиас ссылки.
+ * @returns Удаленная ссылка (или null, если не найдена и не удалось удалить).
+ * @throws NotFoundError если ссылка не найдена.
+ */
+export const deleteShortLink = async (shortAlias: string) => {
+  const linkToDelete = await prisma.link.findUnique({
+    where: { shortAlias: shortAlias },
+    select: { id: true },
+  })
+
+  if (!linkToDelete) {
+    throw new NotFoundError('Short URL to delete not found.')
+  }
+
+  const [deletedClicks, deletedLink] = await prisma.$transaction([
+    prisma.click.deleteMany({
+      where: { linkId: linkToDelete.id },
+    }),
+    prisma.link.delete({
+      where: { id: linkToDelete.id },
+    }),
+  ])
+
+  return deletedLink
+}

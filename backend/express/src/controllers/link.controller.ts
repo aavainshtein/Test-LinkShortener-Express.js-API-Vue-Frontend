@@ -5,6 +5,7 @@ import {
   getOriginalUrl,
   getLinkInfo,
   getLinkAnalytics,
+  deleteShortLink,
 } from '../services/link.service.js'
 import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
 
@@ -88,6 +89,26 @@ export const getLinkAnalyticsController = async (
     const linkAnalytics = await getLinkAnalytics(shortAlias)
 
     return res.status(200).json(linkAnalytics)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteShortLinkController = async (
+  req: Request<{ shortAlias: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { shortAlias } = req.params
+    const deletedLink = await deleteShortLink(shortAlias)
+
+    // Отправляем статус 204 No Content, так как ресурс был успешно удален
+    // Или 200 OK с сообщением/данными об удаленной ссылке
+    return res.status(200).json({
+      message: `Short URL '${deletedLink.shortAlias}' and its clicks deleted successfully.`,
+      deletedLink,
+    })
   } catch (error) {
     next(error)
   }
