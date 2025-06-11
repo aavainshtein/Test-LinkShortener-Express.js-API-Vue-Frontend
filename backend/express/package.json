@@ -1,0 +1,30 @@
+{
+  "name": "express-backend",
+  "version": "1.0.0",
+  "description": "URL Shortener Express Backend API",
+  "packageManager": "yarn@1.22.22",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "prisma:generate": "prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.9",
+    "express": "^5.x",
+    "nanoid": "^5.x",
+    "zod": "^3.x"
+  },
+  "devDependencies": {
+    "@types/express": "^5.x",
+    "@types/node": "^24.x",
+    "dotenv-cli": "^8.0.0",
+    "prisma": "^6.9",
+    "ts-node-dev": "^2.x",
+    "typescript": "^5.x"
+  }
+}

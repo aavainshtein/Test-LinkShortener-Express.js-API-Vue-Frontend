@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Link {
+  id          String    @id @default(uuid())
+  shortAlias  String    @unique @db.VarChar(20)
+  originalUrl String    @db.Text
+  createdAt   DateTime  @default(now())
+  // expiresAt   DateTime? // Пока опционально, добавим позже
+  // clickCount  Int       @default(0) // Пока опционально, добавим позже
+  // alias       String?   @db.VarChar(20) // Пока опционально, добавим позже
+  // clicks      Click[]   // Пока опционально, добавим позже
+}
+
+model Click {
+  id        String   @id @default(uuid())
+  // link      Link     @relation(fields: [linkId], references: [id]) // Пока опционально, добавим позже
+  // linkId    String // Пока опционально, добавим позже
+  clickedAt DateTime @default(now())
+  // ipAddress String   @db.VarChar(45) // Пока опционально, добавим позже
+}
