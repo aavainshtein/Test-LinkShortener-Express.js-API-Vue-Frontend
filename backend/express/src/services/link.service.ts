@@ -1,12 +1,32 @@
 // backend/express/src/services/link.service.ts
 import { PrismaClient } from '@prisma/client'
-import { CreateLinkDto } from '../../shared/schemas/link.schema'
-import { NotFoundError, ConflictError } from '../utils/errors.util'
+import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
+import {
+  NotFoundError,
+  ConflictError,
+  ShortAliasGenerationError,
+} from '../utils/errors.util.js'
+import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()
 
 export const generateUniqueShortAlias = async (): Promise<string> => {
-  return Math.random().toString(36).substring(2, 9)
+  let uniqueAlias: string
+  const MAX_ATTEMPTS = 10
+
+  for (let i = 0; i < MAX_ATTEMPTS; i++) {
+    uniqueAlias = nanoid(7)
+    const existingLink = await prisma.link.findUnique({
+      where: { shortAlias: uniqueAlias },
+    })
+    if (!existingLink) {
+      return uniqueAlias
+    }
+  }
+
+  throw new ShortAliasGenerationError(
+    'Could not generate a unique short alias after multiple attempts.',
+  )
 }
 
 export const createShortLink = async (data: CreateLinkDto) => {
@@ -48,7 +68,10 @@ export const createShortLink = async (data: CreateLinkDto) => {
   }
 }
 
-export const getOriginalUrl = async (shortAlias: string) => {
+export const getOriginalUrl = async (
+  shortAlias: string,
+  ipAddress: string | undefined,
+) => {
   const link = await prisma.link.findUnique({
     where: { shortAlias: shortAlias },
   })
@@ -64,6 +87,14 @@ export const getOriginalUrl = async (shortAlias: string) => {
   await prisma.link.update({
     where: { id: link.id },
     data: { clickCount: { increment: 1 } },
+  })
+
+  await prisma.click.create({
+    data: {
+      linkId: link.id,
+      ipAddress: ipAddress || 'UNKNOWN',
+      clickedAt: new Date(),
+    },
   })
 
   return link.originalUrl
