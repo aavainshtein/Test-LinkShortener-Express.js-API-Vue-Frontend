@@ -1,5 +1,7 @@
-# --- Этап сборки (Build Stage) ---
+# ---  (Build Stage) ---
 FROM node:18-alpine AS build
+
+RUN apk update && apk add --no-cache curl ca-certificates
 
 WORKDIR /app
 
@@ -12,15 +14,16 @@ COPY ./backend/express/entrypoint.sh ./entrypoint.sh
 
 COPY ./shared ./shared/
 
-RUN yarn install --frozen-lockfile
 
+RUN yarn install 
+# RUN yarn
 
 RUN chmod +x ./entrypoint.sh 
 
 RUN yarn prisma generate
 RUN yarn run build
 
-# --- Этап продакшена (Production Stage) ---
+# --- (Production Stage) ---
 FROM node:18-alpine AS production
 
 WORKDIR /app
