@@ -137,6 +137,8 @@ export const getLinkAnalytics = async (shortAlias: string) => {
       id: true,
       originalUrl: true,
       shortAlias: true,
+      createdAt: true,
+      expiresAt: true,
       alias: true,
       clickCount: true,
       clicks: {
@@ -185,4 +187,45 @@ export const deleteShortLink = async (shortAlias: string) => {
   ])
 
   return deletedLink
+}
+
+// ...existing code...
+
+/**
+ * Получает список всех коротких ссылок с пагинацией.
+ * @param page Номер страницы (начиная с 1).
+ * @param pageSize Количество ссылок на странице.
+ * @returns Объект с массивом ссылок и общим количеством.
+ */
+export const getAllLinksPaginated = async (
+  page: number = 1,
+  pageSize: number = 20,
+) => {
+  const skip = (page - 1) * pageSize
+
+  const [links, total] = await Promise.all([
+    prisma.link.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        originalUrl: true,
+        shortAlias: true,
+        alias: true,
+        createdAt: true,
+        expiresAt: true,
+        clickCount: true,
+      },
+    }),
+    prisma.link.count(),
+  ])
+
+  return {
+    links,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
 }

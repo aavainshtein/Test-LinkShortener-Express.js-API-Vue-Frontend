@@ -6,6 +6,7 @@ import {
   getLinkInfo,
   getLinkAnalytics,
   deleteShortLink,
+  getAllLinksPaginated,
 } from '../services/link.service.js'
 import { CreateLinkDto } from '../../shared/schemas/link.schema.js'
 
@@ -89,6 +90,28 @@ export const getLinkAnalyticsController = async (
     const linkAnalytics = await getLinkAnalytics(shortAlias)
 
     return res.status(200).json(linkAnalytics)
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Контроллер для получения всех коротких ссылок с пагинацией.
+ * Обрабатывает GET /links?page=1&pageSize=20
+ */
+export const getAllLinksPaginatedController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  console.log('getAllLinksPaginatedController called')
+  try {
+    console.log('Received request to get all links with pagination')
+    const page = parseInt(req.query.page as string) || 1
+    const pageSize = parseInt(req.query.pageSize as string) || 20
+    console.log(`Fetching links for page ${page} with pageSize ${pageSize}`)
+    const result = await getAllLinksPaginated(page, pageSize)
+    return res.status(200).json(result)
   } catch (error) {
     next(error)
   }
