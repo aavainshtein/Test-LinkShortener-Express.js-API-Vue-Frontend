@@ -198,16 +198,31 @@ onMounted(loadLinks)
       class="max-w-4xl flex-1"
       :loading="loading"
     >
+      <template #originalUrl-cell="{ row }">
+        <UTooltip
+          :text="row.original.originalUrl"
+          placement="top"
+          class="max-w-xs"
+        >
+          <span class="truncate">
+            {{
+              row.original.originalUrl.length > 20
+                ? `${row.original.originalUrl.slice(0, 20)}...`
+                : row.original.originalUrl
+            }}
+          </span>
+        </UTooltip>
+      </template>
       <template #expanded="{ row }">
-        <div class="p-4">
-          <h3 class="mb-2 text-lg font-semibold">Link Analytics</h3>
-          <p class="mb-4">
-            Original URL: {{ row.original.originalUrl }}<br />
-            Short Alias: {{ row.original.shortAlias }}
-          </p>
-        </div>
-        <div class="rounded-lg bg-gray-100 p-2">
-          <LinkAnalyticsTable :link="row.original" />
+        <div
+          class="flex flex-col items-center justify-between rounded-lg bg-neutral-100 p-4"
+        >
+          <div class="flex-1">
+            <h3 class="x font-semibold">Link cliks</h3>
+          </div>
+          <div class="flex-1 p-2">
+            <LinkAnalyticsTable :link="row.original" />
+          </div>
         </div>
       </template>
     </UTable>
