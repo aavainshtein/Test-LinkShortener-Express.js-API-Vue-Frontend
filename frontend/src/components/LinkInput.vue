@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import z from 'zod'
 import { ref, computed, reactive } from 'vue'
-// import { createLinkSchema } from '../../../shared/schemas/link.schema'
 
 const emits = defineEmits<{
   (e: 'linkCreated'): void
 }>()
 
-const apiUrl = 'http://localhost:3000'
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error('VITE_API_URL is not defined in environment variables')
+}
+
+const apiUrl = import.meta.env.VITE_API_URL
 
 const toast = useToast()
 

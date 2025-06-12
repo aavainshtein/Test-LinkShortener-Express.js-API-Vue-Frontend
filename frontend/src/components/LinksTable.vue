@@ -5,7 +5,11 @@ import LinkAnalyticsTable from './LinkAnalyticsTable.vue'
 
 const toast = useToast()
 
-const apiUrl = 'http://localhost:3000'
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error('VITE_API_URL is not defined in environment variables')
+}
+
+const apiUrl = import.meta.env.VITE_API_URL
 
 const isDeleteModalOpen = ref(false)
 const selectedLink = ref<any | null>(null)

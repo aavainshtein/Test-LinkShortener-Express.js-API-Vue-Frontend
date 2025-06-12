@@ -10,6 +10,12 @@ const props = defineProps<{
   }
 }>()
 
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error('VITE_API_URL is not defined in environment variables')
+}
+
+const apiUrl = import.meta.env.VITE_API_URL
+
 const isLoading = ref(false)
 
 const analyticsData = ref<{
@@ -25,7 +31,7 @@ const analyticsData = ref<{
 
 async function fetchAnalytics(shortAlias: string) {
   isLoading.value = true
-  const url = `http://localhost:3000/analytics/${shortAlias}`
+  const url = `${apiUrl}/analytics/${shortAlias}`
   const response = await fetch(url)
   console.log('Analytics response:', response)
   if (!response.ok) throw new Error('Failed to fetch analytics')
