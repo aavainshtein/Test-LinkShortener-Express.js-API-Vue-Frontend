@@ -1,27 +1,15 @@
+<script setup lang="ts">
+import LinkInput from './components/LinkInput.vue'
+import LinksTable from './components/LinksTable.vue'
+</script>
+
 <template>
   <UApp>
-    <div class="flex flex-col items-center justify-center gap-4 h-screen">
-      <h1 class="font-bold text-2xl text-(--ui-primary)">
-        Nuxt UI - Vue Starter
-      </h1>
-
-      <div class="flex items-center gap-2">
-        <UButton
-          label="Documentation"
-          icon="i-lucide-square-play"
-          to="https://ui.nuxt.com/getting-started/installation/vue"
-          target="_blank"
-        />
-
-        <UButton
-          label="GitHub"
-          color="neutral"
-          variant="outline"
-          icon="i-simple-icons:github"
-          to="https://github.com/nuxt/ui"
-          target="_blank"
-        />
-      </div>
+    <div class="flex h-screen flex-col items-center justify-center gap-4">
+      <h1 class="text-2xl font-bold text-(--ui-primary)">Aav link shortener</h1>
+      <LinkInput />
+      <LinksTable />
+      >
     </div>
   </UApp>
 </template>
