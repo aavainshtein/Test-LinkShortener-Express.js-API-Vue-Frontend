@@ -24,23 +24,30 @@ services:
     build:
       context: .
       dockerfile: ./backend/express/Dockerfile
+    entrypoint: ['/app/entrypoint.sh']
     ports:
       - '${BACKEND_PORT}:${BACKEND_PORT}'
     environment:
       DATABASE_URL: ${DATABASE_URL}
       BACKEND_PORT: ${BACKEND_PORT}
       NODE_ENV: development
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
       - ./backend/express/src:/app/src
       - ./backend/express/package.json:/app/package.json
+      - ./backend/express/yarn.lock:/app/yarn.lock
       - ./backend/express/tsconfig.json:/app/tsconfig.json
       - ./backend/express/prisma:/app/prisma
+      - ./backend/express/entrypoint.sh:/app/entrypoint.sh
       - ./shared:/app/shared
       - /app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "npx prisma migrate deploy && yarn start" ч
+    # command: sh -c "npx prisma migrate deploy && yarn start"
 
 volumes:
   postgres_data:

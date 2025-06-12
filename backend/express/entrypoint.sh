@@ -1,4 +1,4 @@
-
+#!/bin/sh
 # Этот скрипт будет выполняться при запуске Docker-контейнера Express.
 
 # Функция для ожидания готовности PostgreSQL
@@ -44,4 +44,5 @@ setup_db_and_migrate
 
 
 echo "Starting application..."
-exec "$@"
+# exec "$@"
+exec node dist/src/server.js
