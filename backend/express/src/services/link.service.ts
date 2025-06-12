@@ -24,9 +24,7 @@ export const generateUniqueShortAlias = async (): Promise<string> => {
     }
   }
 
-  throw new ShortAliasGenerationError(
-    'Could not generate a unique short alias after multiple attempts.',
-  )
+  throw new ShortAliasGenerationError()
 }
 
 export const createShortLink = async (data: CreateLinkDto) => {
@@ -39,7 +37,7 @@ export const createShortLink = async (data: CreateLinkDto) => {
       where: { alias: alias },
     })
     if (existingLink) {
-      throw new ConflictError(`The alias '${alias}' is already in use.`)
+      throw new ConflictError()
     }
     shortAlias = alias
   } else {
@@ -59,9 +57,7 @@ export const createShortLink = async (data: CreateLinkDto) => {
     return link
   } catch (error: any) {
     if (error.code === 'P2002') {
-      throw new ConflictError(
-        `The generated short URL '${shortAlias}' already exists. Please try again or provide a custom alias.`,
-      )
+      throw new ConflictError()
     }
     console.error('Error creating short link:', error)
     throw error
@@ -77,11 +73,11 @@ export const getOriginalUrl = async (
   })
 
   if (!link) {
-    throw new NotFoundError('Short URL not found.')
+    throw new NotFoundError()
   }
 
   if (link.expiresAt && link.expiresAt < new Date()) {
-    throw new NotFoundError('Short URL has expired.')
+    throw new NotFoundError()
   }
 
   await prisma.link.update({
@@ -122,7 +118,7 @@ export const getLinkInfo = async (shortAlias: string) => {
   })
 
   if (!link) {
-    throw new NotFoundError('Short URL information not found.')
+    throw new NotFoundError()
   }
 
   return link
@@ -157,7 +153,7 @@ export const getLinkAnalytics = async (shortAlias: string) => {
   })
 
   if (!link) {
-    throw new NotFoundError('Short URL analytics not found.')
+    throw new NotFoundError()
   }
 
   return link
@@ -176,7 +172,7 @@ export const deleteShortLink = async (shortAlias: string) => {
   })
 
   if (!linkToDelete) {
-    throw new NotFoundError('Short URL to delete not found.')
+    throw new NotFoundError()
   }
 
   const [deletedClicks, deletedLink] = await prisma.$transaction([

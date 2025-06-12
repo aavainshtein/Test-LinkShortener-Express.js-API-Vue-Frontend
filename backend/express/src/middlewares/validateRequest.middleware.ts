@@ -20,7 +20,7 @@ export const validateRequest =
           message: err.message,
         }))
 
-        next(new BadRequestError('Validation failed', errorDetails))
+        next(new BadRequestError(errorDetails))
       } else {
         next(error)
       }

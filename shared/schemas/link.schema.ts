@@ -10,20 +10,23 @@ export const createLinkSchema = z.object({
     .union([
       z
         .string()
-        .datetime({ message: 'Invalid ISO 8601 date format' })
+        .datetime({ message: 'Invalid ISO 8601 date format', local: true })
         .optional(),
       z.null(),
     ])
     .optional(), // Optional, can be null or a valid ISO 8601 string
-  alias: z
-    .string()
-    .min(1, 'Alias cannot be empty')
-    .max(20, 'Alias too long')
-    .regex(
-      /^[a-zA-Z0-9_-]+$/,
-      'Alias can only contain alphanumeric characters, hyphens, and underscores',
-    )
-    .optional(),
+  alias: z.union([
+    z
+      .string()
+      .min(1, 'Alias cannot be empty')
+      .max(20, 'Alias too long')
+      .regex(
+        /^[a-zA-Z0-9_-]+$/,
+        'Alias can only contain alphanumeric characters, hyphens, and underscores',
+      )
+      .optional(),
+    z.null(),
+  ]),
 })
 
 export type CreateLinkDto = z.infer<typeof createLinkSchema>
