@@ -9,6 +9,7 @@ import {
   getLinkInfoController,
   getLinkAnalyticsController,
   deleteShortLinkController,
+  getAllLinksPaginatedController,
 } from '../controllers/link.controller.js'
 
 const router = Router()
@@ -26,5 +27,7 @@ router.get('/info/:shortAlias', getLinkInfoController)
 router.get('/analytics/:shortAlias', getLinkAnalyticsController)
 
 router.delete('/delete/:shortAlias', deleteShortLinkController)
+
+router.get('/api/links/', getAllLinksPaginatedController)
 
 export default router
