@@ -1,4 +1,4 @@
-.env
+
 docker-compose.yaml
 node_modules
 _volumes
@@ -33,7 +33,7 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
-.env
+# .env
 
 # IDEs and editors (shamelessly copied from @angular/cli's .gitignore)
 /.idea
