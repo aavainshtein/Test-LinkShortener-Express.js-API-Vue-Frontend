@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import z from 'zod'
-import { ref, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 // import { createLinkSchema } from '../../../shared/schemas/link.schema'
+
+const emits = defineEmits<{
+  (e: 'linkCreated'): void
+}>()
+
+const apiUrl = 'http://localhost:3000'
+
+const toast = useToast()
 
 const schema = z.object({
   originalUrl: z
@@ -16,7 +24,7 @@ const schema = z.object({
         .optional(),
       z.null(),
     ])
-    .optional(), // Optional, can be null or a valid ISO 8601 string
+    .optional(),
   alias: z.union([
     z
       .string()
@@ -46,29 +54,50 @@ function resetForm() {
   state.alias = null
 }
 
+const isUrlValid = computed(() => {
+  const urlResult = schema.shape.originalUrl.safeParse(state.originalUrl)
+  if (!urlResult.success) return false
+  return true
+})
+
 const handleShorten = async () => {
   console.log('Submitting link with state:', state)
   try {
     // Валидация данных с фронтенда с использованием Zod
-
-    const response = await fetch(`http://localhost:3000/api/shorten`, {
+    const response = await fetch(`${apiUrl}/api/shorten`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(state),
     })
-    console.log('Shortened link response:', response)
-    resetForm() // Сброс формы после успешного создания ссылки
+    const data = await response.json()
+    console.log('Shortened link response:', data?.shortUrl)
+    if (data?.shortUrl) {
+      await navigator.clipboard.writeText(data.shortUrl)
+      console.log('Ссылка скопирована в буфер обмена:', data.shortUrl)
+    }
+    toast.add({
+      title: 'Success',
+      description:
+        'Shortened link created and copied to clipboard successfully!',
+      icon: 'i-lucide-check-circle',
+      color: 'success',
+    })
+    resetForm()
+    emits('linkCreated')
   } catch (err: any) {
     console.error('Frontend shorten error:', err)
+    toast.add({
+      title: 'Error',
+      description: err.message || 'Failed to create shortened link',
+      icon: 'i-lucide-x-circle',
+      color: 'error',
+    })
   }
 }
 </script>
 <template>
-  <pre>
-    {{ state }}
-  </pre>
   <UForm
     :schema="schema"
     :state="state"
@@ -89,7 +118,10 @@ const handleShorten = async () => {
         class="w-full max-w-md"
       />
     </UFormField>
-    <div class="flex w-full max-w-md gap-4">
+    <div
+      class="flex w-full max-w-md gap-4"
+      :class="!!isUrlValid ? '' : 'opacity-50'"
+    >
       <UFormField
         label="Expiration date"
         name="expiresAt"
@@ -104,12 +136,12 @@ const handleShorten = async () => {
           class="w-full max-w-md"
           @change="
             (e) => {
+              const target = e.target as HTMLInputElement | null
               state.expiresAt =
-                e.target.value.trim() === '' ? null : e.target.value
+                target && target.value.trim() === '' ? null : target?.value
             }
           "
         />
-        <!-- <UCalendar v-model="state.expiresAt" /> -->
       </UFormField>
       <UFormField
         label="Custom alias"
