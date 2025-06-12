@@ -9,7 +9,6 @@ import LinksTable from './components/LinksTable.vue'
       <h1 class="text-2xl font-bold text-(--ui-primary)">Aav link shortener</h1>
       <LinkInput />
       <LinksTable />
-      >
     </div>
   </UApp>
 </template>
