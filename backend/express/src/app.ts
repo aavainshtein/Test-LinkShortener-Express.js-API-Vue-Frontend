@@ -22,7 +22,7 @@ app.use(cors(corsOptions)) // <-- Применяем CORS middleware
 app.set('trust proxy', true)
 
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.send(`this is the Shortener backend server, try <a href="http://localhost:5173/" target="_blank">frontend</a>`)
 })
 
 app.use('/', linkRoutes)
