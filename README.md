@@ -1,5 +1,5 @@
 # URL Shortener API — Test Assignment
-![alt text](image.png)
+![alt text](url-shortener.png)
 
 ## 📋 Brief
 
